@@ -1,0 +1,38 @@
+#color_container {
+    display: flex;
+}
+
+#color_container .wrapper {
+    flex-direction: row;
+    padding-right: 1rem;
+}
+
+
+.color_block {
+    width: 15rem;
+    height: 15rem;
+    
+    border: 2px solid black
+}
+
+.hslBar label {
+    display: block;
+    padding-top: 1rem;
+    float: right;
+    clear: right;
+}
+
+.hslBar label select {
+    margin-left: 1rem;
+   
+}
+
+#contrast_container {
+    display: flex;
+}
+
+#contrast_container .contrast_holder {
+    width: 1rem;
+    height: 1rem;
+    flex-direction: row;
+}
