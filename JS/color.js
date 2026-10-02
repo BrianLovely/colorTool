@@ -13,6 +13,10 @@ class Contraster {
         this.contrastContainer = document.getElementById("contrast_container");
         this.addButton = document.getElementById("add");
         this.checkContrast = document.getElementById("checkContrast");
+        this.closeDialog = document.getElementById("alert").querySelector("button");
+        this.closeDialog.addEventListener('click', () => {
+            document.getElementById("alert").close();
+        });
         this.addButton.addEventListener('click', () => {
             this.addColor();
         });
@@ -79,11 +83,21 @@ class Contraster {
 
     addContrast() {
         const contrastArray = this.collectChecked();
+        const contrasts = document.createElement("div");
+        contrasts.classList.add("contrasts");
+        this.contrastContainer.appendChild(contrasts);
         console.log("array length: " + contrastArray.length)
+        if (contrastArray.length !== 2) {
+            console.log("You must select exactly two colors to check contrast.");
+            document.getElementById("alert").showModal();
+            return;
+        }
         for (const con of contrastArray) {
             let contrast = document.createElement("div");
             contrast.classList.add("contrast_holder");
-            this.contrastContainer.appendChild(contrast);
+            contrasts.appendChild(contrast);
+            let hex = con.getHexColor();
+            contrasts.appendChild(document.createTextNode(hex));
             let bg = con.cBlock.style.backgroundColor;
             contrast.style.backgroundColor = bg;
 
@@ -210,11 +224,11 @@ class colorTool {
 
     updateColor() {
         this.cBlock.style.backgroundColor = `hsl(${this.hue}, ${this.sat}%, ${this.lig}%)`;
-        this.id = this.getElementHexColor();
+        this.id = this.getHexColor();
         this.idText.nodeValue = this.id;
     }
 
-    getElementHexColor(property = 'backgroundColor') {
+    getHexColor(property = 'backgroundColor') {
         // 1. Get the computed style of the element (returns "rgb(r, g, b)" or "rgba(r, g, b, a)")
         const computedColor = window.getComputedStyle(this.cBlock)[property];
 

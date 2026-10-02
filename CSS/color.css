@@ -27,12 +27,9 @@
    
 }
 
-#contrast_container {
-    display: flex;
-}
+
 
 #contrast_container .contrast_holder {
     width: 1rem;
     height: 1rem;
-    flex-direction: row;
 }
