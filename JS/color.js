@@ -1,6 +1,5 @@
 console.log("DOMContentLoaded");
-import { APCAcontrast, sRGBtoY, displayP3toY, calcAPCA, fontLookupAPCA } from './apca-w3.js';
-import { colorParsley } from './colorparsley.js';
+ import { APCAcontrast, sRGBtoY, displayP3toY, calcAPCA, fontLookupAPCA } from './apca-w3.js';
 
 const colorBlock = document.querySelector(".color_block");
 const hueInput = document.querySelector(".hue");
@@ -62,8 +61,8 @@ class Contraster {
     }
 
     addColor() {
-        const id = this.colorTools.length;
-        const temp = new colorTool(id);
+        
+        const temp = new colorTool();
         this.colorTools.push(temp);
     }
 
@@ -98,7 +97,7 @@ class Contraster {
 } // End class Contraster
 
 class colorTool {
-    constructor(id) {
+    constructor() {
 
         this.wrapper;
         this.cBlock;
@@ -109,8 +108,9 @@ class colorTool {
         this.hue = "180";
         this.sat = "100";
         this.lig = "50";
-        this.id = id;
+        this.id = "";
         this.idCheck;
+        this.idText;
 
         const cContainer = document.getElementById("color_container");
         const contrastContainer = document.getElementById("contrast_container");
@@ -124,6 +124,7 @@ class colorTool {
         this.wrapper.appendChild(idLabel);
         const idText = document.createTextNode(this.id);
         idLabel.appendChild(idText);
+        this.idText = idText;
 
 
         const idCheck = document.createElement("input");
@@ -203,9 +204,32 @@ class colorTool {
         this.lLabel.appendChild(percent);
 
         this.attachEvents();
-        this.cBlock.style.backgroundColor = `hsl(${this.hue}, ${this.sat}%, ${this.lig}%)`;
+        this.updateColor();
 
     } // End colorTool constructor
+
+    updateColor() {
+        this.cBlock.style.backgroundColor = `hsl(${this.hue}, ${this.sat}%, ${this.lig}%)`;
+        this.id = this.getElementHexColor();
+        this.idText.nodeValue = this.id;
+    }
+
+    getElementHexColor(property = 'backgroundColor') {
+        // 1. Get the computed style of the element (returns "rgb(r, g, b)" or "rgba(r, g, b, a)")
+        const computedColor = window.getComputedStyle(this.cBlock)[property];
+
+        // 2. Extract the numbers using a regex
+        const rgbValues = computedColor.match(/\d+/g);
+        if (!rgbValues) return null;
+
+        // 3. Convert R, G, and B to hex chunks and pad with a leading zero if necessary
+        const r = parseInt(rgbValues[0], 10).toString(16).padStart(2, '0');
+        const g = parseInt(rgbValues[1], 10).toString(16).padStart(2, '0');
+        const b = parseInt(rgbValues[2], 10).toString(16).padStart(2, '0');
+
+        // 4. Combine into a hex string
+        return `#${r}${g}${b}`;
+    }
 
     parseHSL(hslString) {
         // Finds all sequences of digits in the string
@@ -273,7 +297,7 @@ class colorTool {
             //const hue = event.target.value;
             /*const sat = currentHSL[1];
             const lig = currentHSL[2];*/
-            this.cBlock.style.backgroundColor = `hsl(${this.hue}, ${this.sat}%, ${this.lig}%)`;
+            this.updateColor();
 
         });
 
@@ -285,7 +309,7 @@ class colorTool {
             this.sat = event.target.value;
             //const sat = event.target.value;
             //const lig = currentHSL[2];
-            this.cBlock.style.backgroundColor = `hsl(${this.hue}, ${this.sat}%, ${this.lig}%)`;
+            this.updateColor();
 
         });
 
@@ -297,7 +321,7 @@ class colorTool {
             //const sat = currentHSL[1];
             //const lig = event.target.value;
             this.lig = event.target.value;
-            this.cBlock.style.backgroundColor = `hsl(${this.hue}, ${this.sat}%, ${this.lig}%)`;
+            this.updateColor();
 
         });
 
